@@ -1,0 +1,51 @@
+version: '3'
+
+volumes:
+  db-data:
+networks:
+  front-tier:
+  back-tier:
+services:
+  frontend:
+      build: ./frontend
+      depends_on:
+        - my-go-app
+      ports:
+        - 3000:3000
+      networks:
+        - front-tier
+        - back-tier
+  postgres:
+      image: postgres
+      environment:
+        POSTGRES_DB: postgres
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+      volumes:
+        - "db-data:/var/lib/postgresql/data"
+      healthcheck:
+        test: pg_isready -U postgres -d postgres
+        interval: 10s
+        timeout: 3s
+        retries: 3
+      ports:
+        - 5432:5432
+      networks:
+        - back-tier
+  my-go-app:
+      restart: always
+      build: ./backend
+      environment:
+        DB_HOST: postgres
+        DB_USER: postgres
+        DB_PASSWORD: postgres
+        DB_NAME: postgres
+        DB_PORT: 5432
+        ALLOWED_ORIGINS: "*"
+      ports:
+        - 8080:8080
+      depends_on:
+        postgres:
+          condition: service_healthy 
+      networks:
+        - back-tier
