@@ -10,12 +10,6 @@ pipeline {
             CONTAINER_NAME     = 'nodeapp' 
     }
     stages {
-     
-    stage("Terminate old apps) {
-          steps{
-               sh "docker-compose down"
-          }
-          }
     stage("Build frontend app"){
       steps{
              
