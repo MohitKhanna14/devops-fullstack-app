@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent ec2slave
     options {
             buildDiscarder(logRotator(numToKeepStr: '2'))
             disableConcurrentBuilds()
