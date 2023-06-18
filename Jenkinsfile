@@ -17,14 +17,14 @@ pipeline {
       }
     stage("Build frontend app"){
       steps{
-           docker.withRegistry('https://registry.hub.docker.com', 'docker') {
+           
              dir("${env.WORKSPACE}/frontend"){
            sh "pwd"
            sh "docker build -t mohit1412/frontend:latest ."
            
            sh "docker push mohit1412/frontend:latest"
              }
-           }
+           
          
       }
     }
