@@ -42,9 +42,9 @@ pipeline {
         
            
            sh "docker-compose -f docker-compose.yml down"
-           sh "sed -i 's+build: ./vote+image: mohit1412/frontend:latest+g' docker-compose.yml"
+           sh "sed -i 's+build: ./frontend+image: mohit1412/frontend:latest+g' docker-compose.yml"
            sh "cat docker-compose.yml"
-           sh "sed -i 's+build: ./result+image: mohit1412/result:latest+g' docker-compose.yml"
+           sh "sed -i 's+build: ./backend+image: mohit1412/backend:latest+g' docker-compose.yml"
            sh "cat docker-compose.yml"
            sh "docker-compose -f docker-compose.yml up -d"
            
