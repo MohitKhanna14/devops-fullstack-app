@@ -17,7 +17,7 @@ pipeline {
       }
     stage("Build frontend app"){
       steps{
-           docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
+           docker.withRegistry('https://registry.hub.docker.com', 'docker') {
              dir("${env.WORKSPACE}/frontend"){
            sh "pwd"
            sh "docker build -t mohit1412/frontend:latest ."
