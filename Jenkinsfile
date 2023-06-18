@@ -15,43 +15,44 @@ pipeline {
           checkout scm
         }
       }
-        stage('Build Docker Image') {
-            steps {
-                 dir("${env.WORKSPACE}"){
-                sh "eval \$(aws ecr get-login --no-include-email --region '$AWS_DEFAULT_REGION') && sleep 2"
-                sh "docker build . -t 462273782981.dkr.ecr.us-east-1.amazonaws.com/nodeappmk:\${BUILD_NUMBER}"
-                sh "docker push 462273782981.dkr.ecr.us-east-1.amazonaws.com/nodeappmk:\${BUILD_NUMBER}"
-                 }
-            }
-        }
-       stage('Deploy it in app instance') {
-            steps {
-                script {
-                    
-                    
-                    SSH =  'ssh -tt -i /home/ubuntu/demo.pem ubuntu@172.31.1.53 -o StrictHostKeyChecking=no'
-                     sh """
-                     $SSH ' eval \$(aws ecr get-login --no-include-email --region us-east-1) && sleep 2; 
-                     
-                     #!/bin/bash
-                     if [ \$(docker ps | grep -c nodeapp) -eq 0 ] 
-                     then
-                      docker pull 462273782981.dkr.ecr.us-east-1.amazonaws.com/nodeappmk:${BUILD_NUMBER}; 
-                      docker run -td -p 8080:8080 --name ${CONTAINER_NAME} 462273782981.dkr.ecr.us-east-1.amazonaws.com/nodeappmk:${BUILD_NUMBER}
-                     else
-                      docker stop \$(docker ps -aqf "name=${CONTAINER_NAME}")
-                      docker rm \$(docker ps -aqf "name=${CONTAINER_NAME}")
-                      docker pull 462273782981.dkr.ecr.us-east-1.amazonaws.com/nodeappmk:${BUILD_NUMBER}; 
-                      docker run -td -p 8080:8080 --name ${CONTAINER_NAME} 462273782981.dkr.ecr.us-east-1.amazonaws.com/nodeappmk:${BUILD_NUMBER}
-                     fi
-                     
-                     
-                     ' 
-                     """
-                     
-                      }
-                }
-            }
+    stage("Build frontend app"){
+      steps{
+          dir("${env.WORKSPACE}/frontend"){
+           sh "pwd"
+           sh "docker build -t mohit1412/frontend:latest ."
+           
+           sh "docker push mohit1412/frontend:latest"
+       }
+       
+         
+      }
+    }
+    
+    stage("Build backend app"){
+      steps{
+        dir("${env.WORKSPACE}/backend"){
+           sh "pwd"
+           sh "docker build -t mohit1412/backend:latest ."
+           sh "docker push mohit1412/backend:latest"
+       } 
+      }
+    }
+    stage("Update application using compose"){
+      steps{
+        
+           
+           sh "docker-compose -f docker-compose.yml down"
+           sh "sed -i 's+build: ./vote+image: mohit1412/frontend:latest+g' docker-compose.yml"
+           sh "cat docker-compose.yml"
+           sh "sed -i 's+build: ./result+image: mohit1412/result:latest+g' docker-compose.yml"
+           sh "cat docker-compose.yml"
+           sh "docker-compose -f docker-compose.yml up -d"
+           
+           
+       
+         
+      }
+    }
     }
 
     post {
