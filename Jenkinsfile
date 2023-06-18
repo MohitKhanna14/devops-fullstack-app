@@ -10,11 +10,7 @@ pipeline {
             CONTAINER_NAME     = 'nodeapp' 
     }
     stages {
-      stage('Git Checkout') {
-        steps {
-          checkout scm
-        }
-      }
+     
     stage("Terminate old apps) {
           steps{
                sh "docker-compose down"
