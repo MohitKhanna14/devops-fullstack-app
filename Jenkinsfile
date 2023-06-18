@@ -56,11 +56,5 @@ pipeline {
     }
     }
 
-    post {
-        always {
-           
-            deleteDir()
-            sh "docker rmi 462273782981.dkr.ecr.us-east-1.amazonaws.com/nodeappmk:\${BUILD_NUMBER}"
-            }
-        }
+    
 }
