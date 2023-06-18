@@ -17,13 +17,15 @@ pipeline {
       }
     stage("Build frontend app"){
       steps{
+             
+              dir("${env.WORKSPACE}/frontend"){
+              withDockerRegistry([ credentialsId: "docker-hub-credentials", url: "" ]) {
+              sh "pwd"
+              sh "docker build -t mohit1412/frontend:latest ."
            
-             dir("${env.WORKSPACE}/frontend"){
-           sh "pwd"
-           sh "docker build -t mohit1412/frontend:latest ."
-           
-           sh "docker push mohit1412/frontend:latest"
+              sh "docker push mohit1412/frontend:latest"
              }
+              }
            
          
       }
