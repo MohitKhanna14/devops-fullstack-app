@@ -24,20 +24,21 @@ pipeline {
               sh "docker build -t mohit1412/frontend:latest ."
            
               sh "docker push mohit1412/frontend:latest"
-             }
+                }
               }
            
-         
       }
     }
     
     stage("Build backend app"){
       steps{
         dir("${env.WORKSPACE}/backend"){
+             withDockerRegistry([ credentialsId: "docker-hub-credentials", url: "" ]) {
            sh "pwd"
            sh "docker build -t mohit1412/backend:latest ."
            sh "docker push mohit1412/backend:latest"
-       } 
+           } 
+        }
       }
     }
     stage("Update application using compose"){
