@@ -15,6 +15,11 @@ pipeline {
           checkout scm
         }
       }
+    stage("Terminate old apps) {
+          steps{
+               sh "docker-compose down"
+          }
+          }
     stage("Build frontend app"){
       steps{
              
