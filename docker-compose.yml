@@ -8,6 +8,8 @@ networks:
 services:
   frontend:
       build: ./frontend
+      environment:
+        REACT_APP_SERVER_URL: http://my-go-app:8080/employees
       depends_on:
         - my-go-app
       ports:
