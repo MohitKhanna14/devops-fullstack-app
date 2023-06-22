@@ -1,0 +1,1 @@
+curl -X POST http://my-go-app:8080/employees -H 'Content-Type: application/json' -d '{"name": "moh","employee_id": 1}'
