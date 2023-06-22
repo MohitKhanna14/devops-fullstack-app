@@ -7,7 +7,9 @@ networks:
   back-tier:
 services:
   frontend:
-      build: ./frontend
+      build: 
+        context: ./frontend
+        dockerfile: multistagedReactJSDockerFile
       depends_on:
         - my-go-app
       ports:
